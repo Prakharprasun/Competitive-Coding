@@ -186,78 +186,30 @@ const int n = 140;
 map<pair<int, int>, bool> vis;
 map<pair<int, int>, pair<int,int>> dp;
 pair<int, int> helper(int i, int j, vector<vector<char>>& a) {
-    if (vis[{i, j}]) return {0, 0}; // Already visited
+    if (vis[{i, j}]) return {0,0};
     vis[{i, j}] = true;
 
-    // Result values: perimeter and area
     pair<int, int> result = {0, 1};
+    pair<int, int> directions[4] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-    // Directions for checking neighbors
-    pair<int, int> dir[4] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-    pair<int, int> diag[4] = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    for (auto [dx, dy] : directions) {
+        int nx = i + dx;
+        int ny = j + dy;
 
-    int corner = 0;
-    pair<int, int> ver[2] = {{-1, 0}, {1, 0}};
-    pair<int, int> hoz[2] = {{0, 1}, {0, -1}};
-    int v = 0;
-    for (auto [ dx , dy] : ver) {
-        int diagx = i + dx, diagy = j + dy;
-        if (diagx < 0 || diagx >= n || diagy < 0 || diagy >= n || a[diagx][diagy] != a[i][j]) {
-            v++;
-        }
-    }
-
-    int h = 0;
-    for (auto [ dx , dy] : hoz) {
-        int diagx = i + dx, diagy = j + dy;
-        if (diagx < 0 || diagx >= n || diagy < 0 || diagy >= n || a[diagx][diagy] != a[i][j]) {
-            h++;
-        }
-    }
-
-    if (h>=1 && v>=1) {
-        if (h+v == 4) corner+=4;
-        else if (h+v == 3) corner+=2;
-        else if (h+v == 2) corner+=1;
-    }
-        {
-        // Check each diagonal
-        for (auto [dx, dy] : diag) {
-            int diagx = i + dx, diagy = j + dy;
-            if (diagx < 0 || diagx >= n || diagy < 0 || diagy >= n || a[diagx][diagy] != a[i][j])
-            {
-                // If diagonal is out of bounds or empty, check orthogonal neighbors
-                int nx1 = i + dx, ny1 = j; // Vertical neighbor
-                int nx2 = i, ny2 = j + dy; // Horizontal neighbor
-
-                if ((nx1 >= 0 && nx1 < n && ny1 >= 0 && ny1 < n && a[nx1][ny1] == a[i][j]) &&
-                    (nx2 >= 0 && nx2 < n && ny2 >= 0 && ny2 < n && a[nx2][ny2] == a[i][j])) {
-                    corner++; // Valid corner found
-                    }
-            }
-        }
-    }
-
-    // Add corners to perimeter count
-    result.first += corner;
-
-    // Process orthogonal neighbors
-    for (auto [dx, dy] : dir) {
-        int nx = i + dx, ny = j + dy;
-
-        if (nx < 0 || ny < 0 || nx >= n || ny >= n || a[nx][ny] != a[i][j]) {
-            // No perimeter update here, as it's handled by corners
+        if (nx < 0 || ny < 0 || nx >= n || ny >= n) {
+            result.first++;
+        } else if (a[nx][ny] != a[i][j]) {
+            result.first++;
         } else if (!vis[{nx, ny}]) {
             auto subresult = helper(nx, ny, a);
-            result.first += subresult.first; // Aggregate the perimeter from sub-calls
-            result.second += subresult.second; // Aggregate the area from sub-calls
+            result.first += subresult.first;
+            result.second += subresult.second;
         }
     }
 
     dp[{i, j}] = result;
     return result;
 }
-
 
 void Solve() {
 
@@ -274,11 +226,9 @@ void Solve() {
 
     frange(i, n) {
         frange(j, n) {
-            if (!vis[{i, j}])
-                {
+            if (!vis[{i, j}]) {
                 auto [perimeter, area] = helper(i, j, a);
                 ans += perimeter * area;
-                    println(a[i][j],i,j,perimeter,area);
             }
         }
     }
