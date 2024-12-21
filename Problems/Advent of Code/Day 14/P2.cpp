@@ -208,55 +208,80 @@ bool find_any_solution(int a, int b, int c, int &x0, int &y0, int &g) {
     return true;
 }
 
-vector<string> clr;
-map<string, int> dp;
-int helper(string &s) {
-    if (dp.find(s) != dp.end()) {
-        return dp[s];
+int ans[2][2];
+void Solve() {
+
+    freopen("output.txt", "w", stdout);
+
+    // Input
+    vector<pair<int, int>> p, v;
+    string line;
+    while (getline(cin, line)) {
+        if (line.empty()) continue; // Skip empty lines
+        int a,b,c,d;
+        // Button A
+        sscanf(line.c_str(), "p=%lld,%lld v=%lld,%lld", &a, &b, &c, &d);
+        p.emplace_back(a, b);
+        v.emplace_back(c, d);
     }
-    if (s.empty()) {
-        return 1;
-    }
-    string x;
-    int ans = 0;
-    frange(i,s.length()) {
-        x.pb(s[i]);
-        for (const auto& j : clr) {
-            if (x == j) {
-                string k = s.substr(i+1, s.size());
-                ans += helper(k);
+    int h,w;
+    h = 103;
+    w = 101;
+    int t = 100;
+    int least = INF;
+    int cand  = 0;
+
+    frange(g,10000){
+        auto newp = p;
+        int no = 0;
+        frange (i,500) {
+            int x = ((p[i].first + g*v[i].first)%w + w)%w;
+            int y = ((p[i].second + g*v[i].second)%h + h)%h;
+            newp.emplace_back(x,y);
+            if (x!= w/2 && y!= h/2) {
+                ans[x>w/2][y>h/2]++;
             }
         }
-    }
-    dp[s] = ans;
-    return dp[s];
-}
-
-void Solve() {
-    // Input
-    string s;
-    getline(cin, s);
-    string x = "";
-    frange(i, s.length()) {
-        if (s[i] == ',') {
-            clr.pb(x);
-            i++;
-            x = "";
-            continue;
+        range (i,25,h-25) {
+            range (j,25,w-25) {
+                int c = 0;
+                for (auto k : newp) {
+                    if (k.f == j && k.s == i) {
+                        c++;
+                    }
+                }
+                if (c){ no++;}
+            }
         }
-        x.pb(s[i]);
+        if (no < least) {
+            least = no;
+            cand = g;
+        }
+        //if (no > 20*20) continue;
+        print ( "Seconds :");
+        println(g);
+        range (i,0,h) {
+            range (j,0,w) {
+                int c = 0;
+                for (auto k : newp) {
+                    if (k.f == j && k.s == i) {
+                        c++;
+                    }
+                }
+                if (c){ no++ ; cout << 'X';} else cout << ' ';
+            }
+            cout << '\n';
+
+        }
+
+        print ( "Seconds :");
+        println(g);
     }
-    clr.pb(x);
-    getline(cin, s);
-    vector<string> target;
-    while (getline(cin, s)) {
-        target.pb(s);
-    }
-    int ans = 0;
-    for (auto i : target) {
-        ans += helper(i);
-    }
-    println(ans);
+
+    cout << "candidate"<< cand << '\n';
+
+
+    println(ans[0][0]*ans[0][1]*ans[1][0]*ans[1][1]);
 }
 
 // Main function
