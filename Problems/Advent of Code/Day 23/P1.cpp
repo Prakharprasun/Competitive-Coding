@@ -209,7 +209,46 @@ bool find_any_solution(int a, int b, int c, int &x0, int &y0, int &g) {
 }
 
 void Solve() {
+    map<pair<char,char>,int> comp;
+    map<int,pair<char,char>> compbyid;
+    map<int,set<int>> conn;
+    int n = 3380;
+    int j = 0;
+    frange(i,n) {
+        char a[5];
+        scanf("%s",a);
+        if (comp.find(make_pair(a[0],a[1]))==comp.end()) {
+            comp[make_pair(a[0],a[1])] = j++;
+            compbyid[comp[make_pair(a[0],a[1])]] = make_pair(a[0],a[1]);
+        }
+        if (comp.find(make_pair(a[3],a[4]))==comp.end()) {
+            comp[make_pair(a[3],a[4])] = j++;
+            compbyid[comp[make_pair(a[3],a[4])]] = make_pair(a[3],a[4]);
+        }
+        conn[(comp[make_pair(a[0],a[1])])].insert(comp[make_pair(a[3],a[4])]);
+        conn[(comp[make_pair(a[3],a[4])])].insert(comp[make_pair(a[0],a[1])]);
+    }
     
+    set<set<int>> triplet;
+    for (auto i : conn) {
+        if (compbyid[i.f].f != 't') {
+            continue;
+        }
+        for (auto j : i.second) {
+            for (auto k : i.second) {
+                if (conn[j].find(i.f) != conn[j].end() && conn[k].find(j) != conn[k].end()) {
+                    set<int> t;
+                    t.insert(i.f);
+                    t.insert(j);
+                    t.insert(k);
+                    triplet.insert(t);
+                }
+            }
+        }
+    }
+
+    printf("%lld\n", triplet.size());
+
 }
 
 // Main function
