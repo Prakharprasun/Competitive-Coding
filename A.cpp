@@ -2,7 +2,26 @@
  * Author : Prakhar Prasun
  */
 
-#include "bits/stdc++.h"
+#include <algorithm>
+#include <array>
+#include <stack>
+#include <bitset>
+#include <cassert>
+#include <chrono>
+#include <climits>
+#include <cmath>
+#include <complex>
+#include <cstring>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <random>
+#include <set>
+#include <vector>
+#include <fstream>
 using namespace std;
 
 // Debugging macro
@@ -208,19 +227,151 @@ bool find_any_solution(int a, int b, int c, int &x0, int &y0, int &g) {
     return true;
 }
 
-void Solve() {
-    
+const int SIEVE_LIMIT = 40000;
+std::vector<int> primes;
+std::vector<bool> is_prime(SIEVE_LIMIT + 1, true);
+
+void sieve() {
+    is_prime[0] = is_prime[1] = false;
+    for (int p = 2; p * p <= SIEVE_LIMIT; ++p) {
+        if (is_prime[p]) {
+            for (int i = p * p; i <= SIEVE_LIMIT; i += p) {
+                is_prime[i] = false;
+            }
+        }
+    }
+    for (int p = 2; p <= SIEVE_LIMIT; ++p) {
+        if (is_prime[p]) {
+            primes.push_back(p);
+        }
+    }
 }
 
-// Main function
-int32_t main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr);
-    cout << fixed << setprecision(10);
+void helper(int &x) {
+    x++;
+}
 
-    int t = 1;
-    //cin >> t;
+const int m = 1000000007LL;
 
-    while (t--) Solve();
+int modpow(int b, int e) {
+    int r = 1;
+    b %= m;
+    while (e) {
+        if (e&1) {
+            r = r * b % m;
+        }
+        b = b * b % m; e >>= 1;
+    }
+    return r;
+}
+
+int modinv(int x) { 
+    return modpow(x, m - 2);
+}
+
+int binomial(int n, int k) {
+    if (k < 0) return 0;
+    if (k == 0) return 1;
+
+    int ans = 1;
+    int nmod = n % m;
+
+    for (int i = 0; i < k; i++) {
+
+        int t = (nmod + k - 1 - i + m) % m;
+        ans = (ans*t) % m;
+
+        int d = (i + 1);
+        ans = (ans*modinv(d)) % m;
+    }
+    return ans;
+}
+
+map<int,int> factorize(int x) {
+    map<int,int> mp;
+    while(x % 2 == 0) {
+        mp[2]++;
+        x /= 2;
+    }
+    for (int i = 3; i*i<=x; i+=2) {
+        while (x % i == 0) {
+            mp[i]++;
+            x/=i;
+        }
+    }
+
+    if (x>1) mp[x]++;
+    return mp;
+}
+
+int dfs(int i, int current_d, vector<pair<int, int>> prime, int n, int a){
+    if (i == static_cast<long long>(prime.size())) {
+        return 1;
+    }
+
+    int ans = 0;
+    auto [p, e] = prime[i];
+    int mul = 1;
+
+    for (int s = 0; s <= e; s++) {
+        __int128 nd128 = static_cast<__int128>(current_d) * mul;
+
+        if (nd128 > a) break;
+        int newd = static_cast<long long>(nd128);
+
+        int dw = binomial(n, s);
+        int wd = binomial(n, e - s);
+
+        int wp = dw*wd%m;
+
+        int wr= dfs(i+1, newd, prime, n, a);
+
+        ans =(ans+wp*wr)%m;
+
+        if (s<e) {
+            if (p>0 && mul>LLONG_MAX/p) {
+                break;
+            }
+            mul*=p;
+        }
+    }
+
+    return ans;
+}
+
+void Solve() {
+    int n,a,b;
+    cin >> n >> a >> b;
+
+    auto f = factorize(b);
+
+    vector<pair<int, int>> p;
+    for (auto [prime, exp] : f) {
+        p.eb(prime, exp);
+    }
+    int ans = dfs(0, 1, p, n, a);
+    println(ans);
+}
+
+
+signed main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    std::ofstream fout("outputf.txt");
+    if (!fout) {
+        std::cerr << "Error: could not open outputf.txt for writing. Output will go to stdout.\n";
+    } else {
+        // Redirect cout to fout
+        cout.rdbuf(fout.rdbuf());
+    }
+
+    int t=1;
+    cin >> t;
+    for (int i=0;i<t;i++) {
+        cout << "Case #" << i+1 << ": ";
+        Solve();
+    }
 }
 
 /*

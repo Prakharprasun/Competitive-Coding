@@ -4,7 +4,7 @@ using namespace std;
 void input_output(){
 #ifndef ONLINE_JUDGE
     freopen("inputf.in", "r", stdin);
-    freopen("outputf.in", "w", stdout);
+    freopen("outputf.txt", "w", stdout);
     freopen("error.in", "w", stderr);
 #endif
 }
