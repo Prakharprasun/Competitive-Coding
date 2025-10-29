@@ -299,18 +299,49 @@ map<int,int> factorize(int x) {
     return mp;
 }
 
-void dfs(int u, int p,vector<vector<int>> &adj,vector<int> &sub_size,vector<int> &parent) {
-    parent[u] = p;
-    sub_size[u] = 1;
-    for (int v : adj[u]) {
-        if (v != p) {
-            dfs(v, u,adj,sub_size,parent);
-            sub_size[u] += sub_size[v];
+vi check(int d,int n, int k, int x, vi &a) {
+    vi ans;
+    for (int p = 0; p <= x && ans.size() < k; p++) {
+        int i = upper_bound(a.begin(),a.end(),p) - a.begin();
+        if (i<n && a[i]-p < d) {
+            p= max(p, a[i]+d-1);
+            continue;
         }
+        if (i>0 && p - a[i-1] < d) {
+            p= max(p, a[i-1]+d-1);
+            continue;
+        }
+        ans.push_back(p);
     }
+    return ans;
 }
 
 void Solve() {
+    int n,k,x;
+    cin>>n>>k;
+    cin >> x;
+    vi a(n);
+
+    for(int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+
+    sor(a);
+
+
+    int lo=0,hi= x+1;
+    while(hi-lo>1) {
+        int mid = lo + (hi - lo) / 2;
+        if (check(mid,n,k,x,a).size()==k) {
+            lo = mid;
+        } else {
+            hi = mid;
+        }
+    }
+    for (auto i : check(lo,n,k,x,a)) {
+        cout<<i<<" ";
+    }
+    cout<<'\n';
 }
 
 
