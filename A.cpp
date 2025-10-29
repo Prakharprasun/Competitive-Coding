@@ -227,28 +227,23 @@ bool find_any_solution(int a, int b, int c, int &x0, int &y0, int &g) {
     return true;
 }
 
-const int SIEVE_LIMIT = 40000;
-std::vector<int> primes;
-std::vector<bool> is_prime(SIEVE_LIMIT + 1, true);
-
-void sieve() {
+std::vector<int> sieve(int limit) {
+    std::vector<bool> is_prime(limit + 1, true);
     is_prime[0] = is_prime[1] = false;
-    for (int p = 2; p * p <= SIEVE_LIMIT; ++p) {
+    for (int p = 2; p * p <= limit; p++) {
         if (is_prime[p]) {
-            for (int i = p * p; i <= SIEVE_LIMIT; i += p) {
+            for (int i = p * p; i <= limit; i += p) {
                 is_prime[i] = false;
             }
         }
     }
-    for (int p = 2; p <= SIEVE_LIMIT; ++p) {
+    std::vector<int> primes;
+    for (int p = 2; p <= limit; p++) {
         if (is_prime[p]) {
             primes.push_back(p);
         }
     }
-}
-
-void helper(int &x) {
-    x++;
+    return primes;
 }
 
 const int m = 1000000007LL;
@@ -304,53 +299,18 @@ map<int,int> factorize(int x) {
     return mp;
 }
 
-int dfs(int i, int current_d, vector<pair<int, int>> prime, int n, int a){
-    if (i == static_cast<long long>(prime.size())) {
-        return 1;
-    }
-
-    int ans = 0;
-    auto [p, e] = prime[i];
-    int mul = 1;
-
-    for (int s = 0; s <= e; s++) {
-        __int128 nd128 = static_cast<__int128>(current_d) * mul;
-
-        if (nd128 > a) break;
-        int newd = static_cast<long long>(nd128);
-
-        int dw = binomial(n, s);
-        int wd = binomial(n, e - s);
-
-        int wp = dw*wd%m;
-
-        int wr= dfs(i+1, newd, prime, n, a);
-
-        ans =(ans+wp*wr)%m;
-
-        if (s<e) {
-            if (p>0 && mul>LLONG_MAX/p) {
-                break;
-            }
-            mul*=p;
+void dfs(int u, int p,vector<vector<int>> &adj,vector<int> &sub_size,vector<int> &parent) {
+    parent[u] = p;
+    sub_size[u] = 1;
+    for (int v : adj[u]) {
+        if (v != p) {
+            dfs(v, u,adj,sub_size,parent);
+            sub_size[u] += sub_size[v];
         }
     }
-
-    return ans;
 }
 
 void Solve() {
-    int n,a,b;
-    cin >> n >> a >> b;
-
-    auto f = factorize(b);
-
-    vector<pair<int, int>> p;
-    for (auto [prime, exp] : f) {
-        p.eb(prime, exp);
-    }
-    int ans = dfs(0, 1, p, n, a);
-    println(ans);
 }
 
 
@@ -358,18 +318,18 @@ signed main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    std::ofstream fout("outputf.txt");
-    if (!fout) {
-        std::cerr << "Error: could not open outputf.txt for writing. Output will go to stdout.\n";
-    } else {
-        // Redirect cout to fout
-        cout.rdbuf(fout.rdbuf());
-    }
+    // std::ofstream fout("outputf.txt");
+    // if (!fout) {
+    //     std::cerr << "Error: could not open outputf.txt for writing. Output will go to stdout.\n";
+    // } else {
+    //     // Redirect cout to fout
+    //     cout.rdbuf(fout.rdbuf());
+    // }
 
     int t=1;
     cin >> t;
     for (int i=0;i<t;i++) {
-        cout << "Case #" << i+1 << ": ";
+        // cout << "Case #" << i+1 << ": ";
         Solve();
     }
 }
