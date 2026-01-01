@@ -1,6 +1,26 @@
 #ifdef ONPC
 #define DEBUG_TEMPLATE_CPP
-#include "bits/stdc++.h"
+#include <algorithm>
+#include <array>
+#include <stack>
+#include <bitset>
+#include <cassert>
+#include <chrono>
+#include <climits>
+#include <cmath>
+#include <complex>
+#include <cstring>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <random>
+#include <set>
+#include <vector>
+#include <fstream>
+
 // #define cerr cout
 namespace __DEBUG_UTIL__
 {

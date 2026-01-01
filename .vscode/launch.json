@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/prakharprasun/Developer/Competitive-Coding/A",
+      "program": "/Users/prakharprasun/Developer/Competitive-Coding/A/build/Debug/outDebug"
+    }
+  ]
+}

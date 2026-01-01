@@ -1,31 +1,51 @@
-#include "bits/stdc++.h" 
+#ifndef ONPC
+#pragma GCC optimize ("O3")
+#pragma GCC optimize ("unroll-loops")
+#endif
+
+#include <algorithm>
+#include <array>
+#include <stack>
+#include <bitset>
+#include <cassert>
+#include <chrono>
+#include <climits>
+#include <cmath>
+#include <complex>
+#include <cstring>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <random>
+#include <set>
+#include <vector>
+#include <fstream>
 using namespace std;
 
-#define int long long
+// Debugging macro
+#ifdef ONPC
+#include "DEBUG.h"
+#else
+#define debug(...)  // No-op for production
+#endif
 
 void solve() {
-    int p = 0;
-    int n=0;
-    cin >> n;
-    while(n--){
-        char a; int b;
-        cin >> a >> b;
-        if(a=='P') p+=n;
-        else{
-            if(p<b){
-                cout << "YES\n";
-                p=0;
-            } else {
-                cout << "NO\n";
-                p-=b;
-            }
-        }
-    }
+   cout << "clang works 3!" << '\n'; 
 }
 
 signed main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    int t=1;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+#ifdef ONPC
+    freopen("inputf.txt","r",stdin);
+    freopen("output.txt","w",stdout);
+#endif
+
+    int t = 1;
+    cin >> t;
     while(t--) solve();
-    return 0;
 }
