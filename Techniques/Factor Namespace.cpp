@@ -216,6 +216,41 @@ inline u64 divisor_count(u64 n) {
   return ans;
 }
 
+/**
+ * @brief Enumerate all positive divisors of n.
+ *
+ * Uses prime factorization + recursive construction.
+ * Complexity: O(τ(n)) after factorization.
+ *
+ * @example
+ * divisors(1)     -> {1}
+ * divisors(18)    -> {1,2,3,6,9,18}
+ * divisors(360)   -> 24 divisors
+ */
+inline std::vector<u64> divisors(u64 n) {
+  if (n == 0)
+    return {}; // undefined, but safe guard
+  if (n == 1)
+    return {1};
+
+  auto pf = compress(factor(n));
+  std::vector<u64> res = {1};
+
+  for (auto [p, e] : pf) {
+    std::vector<u64> cur;
+    u64 pe = 1;
+    for (int i = 1; i <= e; ++i) {
+      pe *= p;
+      for (u64 x : res)
+        cur.push_back(x * pe);
+    }
+    res.insert(res.end(), cur.begin(), cur.end());
+  }
+
+  std::sort(res.begin(), res.end());
+  return res;
+}
+
 } // namespace factor
 
 static vector<int> divisors(1'000'001, -1);

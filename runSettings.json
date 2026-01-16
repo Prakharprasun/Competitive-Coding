@@ -1,0 +1,13 @@
+{
+  ".cpp": {
+    "compileCommand": [
+      "clang++",
+      "${file}",
+      "-o",
+      "${fileDirname}/${fileBasenameNoExtension}"
+    ],
+    "runCommand": [
+      "${fileDirname}/${fileBasenameNoExtension}"
+    ]
+  }
+}
